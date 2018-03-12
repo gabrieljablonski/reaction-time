@@ -573,7 +573,7 @@ class ControlWindow(QtWidgets.QMainWindow):
             else:  # Distribution completely random
                 for light_n in range(self.spinNumberBlocks.value()):
                     # Select one light at random from the available ones
-                    tree_items[light_n][1] = str(choice(light_sequence, 1)[0])
+                    tree_items[light_n][1] = str(choice(light_sequence))
 
             """ Rebuild lights tree """
             self.build_tree(tree_items)
