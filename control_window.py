@@ -376,7 +376,7 @@ class ControlWindow(QtWidgets.QMainWindow):
             icon = icon_warning
             title = "File error"
         elif msg_code == "file_open_error":
-            text = "Error opening %s." % extra
+            text = "Error opening %s.\nCheck file and try again." % extra
             icon = icon_warning
             title = "File error"
         elif msg_code == "file_saved":
@@ -596,8 +596,9 @@ class ControlWindow(QtWidgets.QMainWindow):
             self.build_tree(tree_items)
 
     def shuffle_both(self):
-        self.shuffle_sequence()
-        self.shuffle_instants()
+        if self.groupLightsControl.isEnabled():
+            self.shuffle_sequence()
+            self.shuffle_instants()
 
     def update_manual_adjust(self):
         item_selected = self.treeLightSequence.currentItem()                        # Item selected on tree
@@ -670,9 +671,8 @@ class ControlWindow(QtWidgets.QMainWindow):
                 tree_items = [[item[0], item[1], item[2][:-2]] for item in tree_items]  # Remove decimal place from time
                 self.build_tree(tree_items)
                 self.spinNumberBlocks.setValue(self.treeLightSequence.topLevelItemCount())
-
-            except EnvironmentError:
-                self.message_box("file_open_error", name)
+            except Exception:  # Will be raised if any problems happen reading the file, including incompatible file
+                self.message_box("file_open_error", os.path.split(name)[1])
 
     def start_session(self):
         if not self.last_session_saved:
