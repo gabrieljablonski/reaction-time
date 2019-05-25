@@ -1,4 +1,4 @@
-# ReactionTime-PyQt5
+# Reaction Time
 Support interface for measuring choice reaction time.
 
 This project was created with the intent of providing a medium for syncronizing an automatic visual
