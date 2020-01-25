@@ -51,13 +51,20 @@ def delsys_emg_channels(file_path):
     }
     try:
         with(open(file_path, 'r')) as file:
-            for line in file.readlines()[285:]:
+            for line in file.readlines():
+                if line == '\n' or line[0] == 'X':
+                    continue
                 line = line.replace(",", ".").split("\t")
-                channels["T"].append(float(line[0]))
-                channels["DA"].append(float(line[1]))
-                channels["BB"].append(float(line[21]))
-                channels["TB"].append(float(line[41]))
-                channels["TG"].append(float(line[61]))
+                def cvt(val):
+                    try:
+                        return float(val)
+                    except:
+                        return 0.0
+                channels["T"].append(cvt(line[0]))
+                channels["DA"].append(cvt(line[1]))
+                channels["BB"].append(cvt(line[2]))
+                channels["TB"].append(cvt(line[3]))
+                channels["TG"].append(cvt(line[21]))
 
         for key, value in channels.items():
             if key != "T":
@@ -65,7 +72,8 @@ def delsys_emg_channels(file_path):
 
         return channels
 
-    except Exception:
+    except Exception as e:
+        print(e)
         return 0
 
 
@@ -413,13 +421,13 @@ class RTMainWindow(QtWidgets.QMainWindow):
         self.chkMarker.setChecked(not self.chkMarker.isChecked())
 
     def open_files(self):
-        files = QtWidgets.QFileDialog.getOpenFileNames(QtWidgets.QFileDialog(), caption="Load Files",
-                                                       filter="Text files (*.txt)")
-        if files[0]:
-            files_window = RTFilesWindow(files[0])
-            files_window.exec_()
-            self.load_files(files_window.files)
-            # self.plot()
+        # files = QtWidgets.QFileDialog.getOpenFileNames(QtWidgets.QFileDialog(), caption="Load Files",
+        #                                                filter="Text files (*.txt)")
+        # if files[0]:
+            # files_window = RTFilesWindow(files[0])
+        files_window = RTFilesWindow([])
+        files_window.exec_()
+        self.load_files(files_window.files)
 
     def load_files(self, files):
         for key in self.channels.keys():
